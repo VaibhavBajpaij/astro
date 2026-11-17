@@ -668,7 +668,13 @@ if (inBrowser) {
 		});
 		// There's not a good way to record scroll position before a history back
 		// navigation, so we will record it when the user has stopped scrolling.
-		if ('onscrollend' in window) addEventListener('scrollend', onScrollEnd);
+		if ('onscrollend' in window) {
+			let scrollEndTimeout: number | undefined;
+			addEventListener('scrollend', () => {
+				window.clearTimeout(scrollEndTimeout);
+				scrollEndTimeout = window.setTimeout(onScrollEnd, 100);
+			});
+		}
 		else {
 			// Keep track of state between intervals
 			let intervalId: number | undefined, lastY: number, lastX: number, lastIndex: State['index'];
